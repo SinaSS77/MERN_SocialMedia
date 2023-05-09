@@ -22,7 +22,7 @@ app.use(bodyParser.urlencoded({limit: "30mb", extended: true}));
 app.use(cors());
 app.use("/assets", express.static(path.join(__dirname, 'public/assets')));
 
-/* File Storage Conf.*/
+/* File Storage Conf. From github repo multer*/ 
 const storage = multer.diskStorage({
   destination: function(req, file, cb){
     cb(null, "public/assets");
@@ -30,4 +30,16 @@ const storage = multer.diskStorage({
   filename: function(req, file, cb){
     cb(null, file.originalname);
   }
-})
+});
+const upload = multer({ storage });
+
+/* MONGOOSE SETUP */
+const PORT = process.env.PORT || 6001 ;
+mongoose.connect(process.env.Mongo_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  })
+  .then(() => {
+    app.listen(PORT, () => console.log(`Server Port: ${PORT}`));
+  })
+  .catch((err) => console.log(`Mongoose ${err}: didnt connect`));
